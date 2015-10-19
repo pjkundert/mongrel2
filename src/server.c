@@ -447,13 +447,15 @@ void Server_init()
         log_info("WARNING: Setting zeromq.threads greater than 1 can cause lockups in your handlers.");
     }
 
-    int mq_max_sockets = Setting_get_int("zeromq.max_sockets", 1024);
+    int max_sockets = Setting_get_int("zeromq.max_sockets", 1024);
 
-    log_info("Starting 0MQ with %d threads, %d max_sockets.", mq_threads, mq_max_sockets);
+    log_info("Starting 0MQ with %d threads, %d max_sockets.", mq_threads, max_sockets);
     mqinit(mq_threads);
-    if(zmq_ctx_get(ZMQ_CTX, ZMQ_MAX_SOCKETS) != mq_max_sockets) {
-        if(zmq_ctx_set(ZMQ_CTX, ZMQ_MAX_SOCKETS, mq_max_sockets) < 0) {
-	    printf("Error setting 0mq ZMQ_MAX_SOCKETS to %d: %s.\n", mq_max_sockets, strerror(errno));
+    int max_sockets_now = zmq_ctx_get(ZMQ_CTX, ZMQ_MAX_SOCKETS);
+    if(max_sockets_now != max_sockets) {
+        log_info("Changing 0MQ ZMQ_MAX_SOCKETS from %d to %d", max_sockets_now, max_sockets );
+        if(zmq_ctx_set(ZMQ_CTX, ZMQ_MAX_SOCKETS, max_sockets) < 0) {
+	    printf("Error setting 0mq ZMQ_MAX_SOCKETS to %d: %s.\n", max_sockets, strerror(errno));
 	    exit(1);
 	}
     }
