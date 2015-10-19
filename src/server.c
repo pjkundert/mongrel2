@@ -450,7 +450,7 @@ void Server_init()
     int mq_max_sockets = Setting_get_int("zeromq.max_sockets", 1024);
 
     log_info("Starting 0MQ with %d threads, %d max_sockets.", mq_threads, mq_max_sockets);
-    mqinit(mq_threads, mq_max_sockets);
+    mqinit(mq_threads);
     if(zmq_ctx_get(ZMQ_CTX, ZMQ_MAX_SOCKETS) != mq_max_sockets) {
         if(zmq_ctx_set(ZMZMQ_CTX, ZMQ_MAX_SOCKETS, mq_max_sockets) < 0) {
 	    printf("Error setting 0mq ZMQ_MAX_SOCKETS to %d: %s.\n", max_sockets, strerror(errno));
